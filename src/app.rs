@@ -31,7 +31,7 @@ pub fn App(cx: Scope) -> impl IntoView {
 /// Renders the color page of your application.
 #[component]
 fn ColorPage(cx: Scope) -> impl IntoView {
-    let INITIAL_COLOR: &str = "#ff0000";
+    const INITIAL_COLOR: &str = "#ff0000";
     let (color, set_color) = create_signal(cx, INITIAL_COLOR.to_string());
 
     #[cfg(not(feature = "ssr"))]
@@ -55,9 +55,8 @@ fn ColorPage(cx: Scope) -> impl IntoView {
         if let Ok(Some(storage)) = window().local_storage() {
             storage.set_item("color", &color).expect("Failed to set color in local storage");
         }
-    
-        let color_clone = color.clone();
-        set_color.update(move |col| *col = color_clone);
+
+        set_color.update(|col| *col = color.clone());
 
         log!("color changed to {}", color);
     };
@@ -67,7 +66,7 @@ fn ColorPage(cx: Scope) -> impl IntoView {
     });
 
     let styles = move || {
-        format!("color: {}", color.get())
+        format!("color: {}", color())
     };
 
     view! { cx,
